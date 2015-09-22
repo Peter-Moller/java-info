@@ -187,7 +187,7 @@ fi
 
 SoftwareVersion
 
-printf "${ESC}${BlackBack};${WhiteFont}mJava report for:${Reset}${ESC}${WhiteBack};${BlackFont}m $() ${Reset}   ${ESC}${BlackBack};${WhiteFont}mRunning:${ESC}${WhiteBack};${BlackFont}m $SW_VERS ${Reset}   ${ESC}${BlackBack};${WhiteFont}mDate & time:${ESC}${WhiteBack};${BlackFont}m $(date +%F", "%R) ${Reset}\n"
+printf "${ESC}${BlackBack};${WhiteFont}mJava report for:${Reset}${ESC}${WhiteBack};${BlackFont}m $(/usr/sbin/networksetup -getcomputername 2>/dev/null) ${Reset}   ${ESC}${BlackBack};${WhiteFont}mRunning:${ESC}${WhiteBack};${BlackFont}m $SW_VERS ${Reset}   ${ESC}${BlackBack};${WhiteFont}mDate & time:${ESC}${WhiteBack};${BlackFont}m $(date +%F", "%R) ${Reset}\n"
 echo
 #echo "Safari version: $(defaults read /Applications/Safari.app/Contents/Info CFBundleShortVersionString)"
 
