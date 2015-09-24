@@ -1,6 +1,14 @@
 #!/bin/bash
 # Small script to report the status of Java applet runability
-# 
+# 2013-04-04 / Peter Möller 
+# Deprtment of Computer Science, Lund University
+# Last change: 2015-09-24
+# Version 2.0.1
+# 2014-10-29: added information about running java processes
+# 2014-12-12: name changed from "java_check.sh" to "java_info.sh"
+# 205-09:     moved to GitHub
+#
+#
 # Copyright 2015 Peter Möller, Dept of Copmuter Science, Lund University
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +23,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# First version released 2013-04-04 / Peter Möller 
-# Last change: 2014-04-20
-# Version 2.0
-# 2014-10-29: added information about running java processes
-# 2014-12-12: name changed from "java_check.sh" to "java_info.sh"
+# 
 
 # (Colors can be found at http://en.wikipedia.org/wiki/ANSI_escape_code, http://graphcomp.com/info/specs/ansi_col.html and other sites)
 Reset="\e[0m"
@@ -63,7 +67,7 @@ fi
 # Who owns the script?
 ScriptOwner="$(ls -ls ${DirName}/${ScriptName} | awk '{print $4":"$5}')"
 
-TempFile="/tmp/java_check.$$.txt"
+TempFile="/tmp/java_info.$$.txt"
 
 FormatString="%-18s%-12s%-50s"
 
@@ -187,7 +191,7 @@ fi
 
 SoftwareVersion
 
-printf "${ESC}${BlackBack};${WhiteFont}mJava report for:${Reset}${ESC}${WhiteBack};${BlackFont}m $(/usr/sbin/networksetup -getcomputername 2>/dev/null) ${Reset}   ${ESC}${BlackBack};${WhiteFont}mRunning:${ESC}${WhiteBack};${BlackFont}m $SW_VERS ${Reset}   ${ESC}${BlackBack};${WhiteFont}mDate & time:${ESC}${WhiteBack};${BlackFont}m $(date +%F", "%R) ${Reset}\n"
+printf "${ESC}${BlackBack};${WhiteFont}mJava report for:${Reset}${ESC}${WhiteBack};${BlackFont}m $() ${Reset}   ${ESC}${BlackBack};${WhiteFont}mRunning:${ESC}${WhiteBack};${BlackFont}m $SW_VERS ${Reset}   ${ESC}${BlackBack};${WhiteFont}mDate & time:${ESC}${WhiteBack};${BlackFont}m $(date +%F", "%R) ${Reset}\n"
 echo
 #echo "Safari version: $(defaults read /Applications/Safari.app/Contents/Info CFBundleShortVersionString)"
 
@@ -251,7 +255,11 @@ echo
 # Display information about running java processes
 
 # Generate TempFile
-ps -A -o user,pid,ppid,command | grep [j]ava[^_] | grep -v com.oracle.java.JavaUpdateHelper | sed 's;Internet Plug;Internet_Plug;g' | awk '{print $1" "$2" "$3" "$4}' > $TempFile
+# It contains Username, PID, PPID and Command for all running Java-processes (one process per line)
+#ps -A -o user,pid,ppid,command | grep [j]ava[^_] | grep -v com.oracle.java.JavaUpdateHelper | awk '{print $1" "$2" "$3" "$4}' > $TempFile
+ps -A -o user,pid,ppid,command | grep [j]ava[^_] | grep -v com.oracle.java.JavaUpdateHelper | perl -ne 'm/(^.+?(?=\ \-))/; print "$1\n"' > $TempFile
+# Example: 
+# peterm          68101 67991 /Applications/Minecraft 2.app/Contents/runtime/jre-x64/1.8.0_60/bin/java
 # Example:
 # cs-pmo 49294 49286 /Library/Internet_Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java
 # Need to eliminate the following: /Library/PrivilegedHelperTools/com.oracle.java.JavaUpdateHelper which may appear
@@ -278,8 +286,11 @@ if [ -s $TempFile ]; then
       # Example:
       #  PPIDUser=cs-pmo
       echo "• User: \"$UserID\" (PID: $ProcessID)"
-      echo "• Command: ${COMMAND/Internet_Plug/Internet Plug}"
-      echo "• Java version: $("${COMMAND/Internet_Plug/Internet Plug}" -version 2>&1 | awk '/version/{print $NF}')"
+      echo "• Command: $COMMAND"
+      # Find out version of java by going to the directory (only way I could find to deal with “ ” in path…)
+      pushd "$(dirname "$(echo $COMMAND)")" >> /dev/null
+      echo "• Java version: $(./$(basename "$(echo $COMMAND | sed 's/ $//g')") -version 2>&1 | awk '/version/{print $NF}')"
+      popd >> /dev/null
 #      echo "• Parent command: \"$PPIDCommand\" (PPID=$ParentPID), run by \"$PPIDUser\""
       if [ -n "$PPIDApp" ]; then
       	printf "${ESC}${ItalicFace}m• Launched by: \"$PPIDApp\" (PID=$ParentPID, run by \"$PPIDUser\")${Reset}\n"
