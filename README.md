@@ -9,11 +9,13 @@ Overview of the script:
 
 `/usr/libexec/java_home` is the base for the script. This reports all java instances that the system knows about. 
 
-If present, these locations are then processed with all relevant information gathered:
+Java web browser plugin is reported separately.
+
+If there are any running java-instances, the following is reported for each process:
  - `$USER` and `$PID`
- - Command
- - Java version for this
- - What application/process launched this and who is running this?
+ - Command that is running
+ - Java version
+ - What application/process launched it, `$PPID` and who is running it?
 
 Finaly, information is presented on:
  - Where you can download Java 6 [from Apple]
