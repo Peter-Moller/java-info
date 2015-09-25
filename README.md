@@ -14,7 +14,7 @@ Java web browser plugin is reported separately.
 If there are any running java-instances, the following is reported for each process:
  - `$USER` and `$PID`
  - Command that is running
- - Java version
+ - Java version for that command
  - What application/process launched it, `$PPID` and who is running it?
 
 Finaly, information is presented on:
@@ -26,5 +26,5 @@ The script deals with spaces in PATH of a running command (was a bit tricky :-)
 
 Assumptions:
 ------------------
- - Any java is assumed to be named `java` 
+ - Any running java binary is assumed to be named `java` 
  - That “` -`” (space followed by a dash) is the start of the arguments on the process listing and not part of the PATH of the running application or java instance
