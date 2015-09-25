@@ -1,15 +1,14 @@
 #!/bin/bash
-# Small script to report the status of Java applet runability
-# 2013-04-04 / Peter Möller 
-# Deprtment of Computer Science, Lund University
-# Last change: 2015-09-24
-# Version 2.0.1
+# Small script to report the status of the Java environment on your local computer
+# 
+# Copyright 2015 Peter Möller, Dept of Copmuter Science, Lund University
+# Last change: 2015-09-25
+# 
+# Version 2.0.2
 # 2014-10-29: added information about running java processes
 # 2014-12-12: name changed from "java_check.sh" to "java_info.sh"
 # 205-09:     moved to GitHub
 #
-#
-# Copyright 2015 Peter Möller, Dept of Copmuter Science, Lund University
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -256,13 +255,15 @@ echo
 
 # Generate TempFile
 # It contains Username, PID, PPID and Command for all running Java-processes (one process per line)
-#ps -A -o user,pid,ppid,command | grep [j]ava[^_] | grep -v com.oracle.java.JavaUpdateHelper | awk '{print $1" "$2" "$3" "$4}' > $TempFile
+# When running for instance Minecraft, the java process line can be absolutely humongous, such as:
+# 'cs-pmo          67802 67799 /Applications/Minecraft 2.app/Contents/runtime/jre-x64/1.8.0_60/bin/java -Xdock:icon=/Users/cs-pmo/Library/Application Support/minecraft/assets/objects/99/991b421dfd401f115241601b2b373140a8d78572 -Xdock:name=Minecraft -Xmx1G -XX:+UseConcMarkSweepGC  and on and on and on...'
+# I assume that the relevant part ends just before ' -', i.e. before arguments. 
+# This *will* break when someone is running an application that is named 'namepart1 -namepart2.app', but I assume this be extremely rare! :-)
+# So, I therefore use the regexp '^.+?(?=\ \-)' to get the interesting part of the line: 
+# from the start of the line, take all characters ('?' is non greedy) up until, but not including, ' -'
 ps -A -o user,pid,ppid,command | grep [j]ava[^_] | grep -v com.oracle.java.JavaUpdateHelper | perl -ne 'm/(^.+?(?=\ \-))/; print "$1\n"' > $TempFile
 # Example: 
 # peterm          68101 67991 /Applications/Minecraft 2.app/Contents/runtime/jre-x64/1.8.0_60/bin/java
-# Example:
-# cs-pmo 49294 49286 /Library/Internet_Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java
-# Need to eliminate the following: /Library/PrivilegedHelperTools/com.oracle.java.JavaUpdateHelper which may appear
 
 # Display output if there are any running java processes
 if [ -s $TempFile ]; then
@@ -287,15 +288,12 @@ if [ -s $TempFile ]; then
       #  PPIDUser=cs-pmo
       echo "• User: \"$UserID\" (PID: $ProcessID)"
       echo "• Command: $COMMAND"
-      # Find out version of java by going to the directory (only way I could find to deal with “ ” in path…)
-      pushd "$(dirname "$(echo $COMMAND)")" >> /dev/null
-      echo "• Java version: $(./$(basename "$(echo $COMMAND | sed 's/ $//g')") -version 2>&1 | awk '/version/{print $NF}')"
-      popd >> /dev/null
-#      echo "• Parent command: \"$PPIDCommand\" (PPID=$ParentPID), run by \"$PPIDUser\""
+      echo "• Java version: $("$(echo $COMMAND)" -version 2>&1 | awk '/version/{print $NF}')"
       if [ -n "$PPIDApp" ]; then
       	printf "${ESC}${ItalicFace}m• Launched by: \"$PPIDApp\" (PID=$ParentPID, run by \"$PPIDUser\")${Reset}\n"
       else
-      	printf "${ESC}${ItalicFace}m• Launched by: \"$(ps -o command -p $ParentPID | grep -v COMMAND | awk '{print $1}' | sed 's;/Contents/MacOS/.*$;;')\" (PID=$ParentPID, run by \"$PPIDUser\")${Reset}\n"
+      	# Neat fix: replace '/System/Library/Frameworks/WebKit.framework.*WebKit.*' with 'Safari'
+      	printf "${ESC}${ItalicFace}m• Launched by: \"$(ps -o command -p $ParentPID | grep -v COMMAND | awk '{print $1}' | sed -e 's;/Contents/MacOS/.*$;;' -e 's;/System/Library/Frameworks/WebKit.framework.*WebKit.*;Safari;')\" (PID=$ParentPID, run by \"$PPIDUser\")${Reset}\n"
       fi
       echo
     done
