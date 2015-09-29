@@ -4,7 +4,7 @@
 # Copyright 2015 Peter Möller, Dept of Copmuter Science, Lund University
 # Last change: 2015-09-25
 # 
-# Version 2.0.2
+# Version 2.0.3
 # 2014-10-29: added information about running java processes
 # 2014-12-12: name changed from "java_check.sh" to "java_info.sh"
 # 205-09:     moved to GitHub
@@ -190,7 +190,7 @@ fi
 
 SoftwareVersion
 
-printf "${ESC}${BlackBack};${WhiteFont}mJava report for:${Reset}${ESC}${WhiteBack};${BlackFont}m $() ${Reset}   ${ESC}${BlackBack};${WhiteFont}mRunning:${ESC}${WhiteBack};${BlackFont}m $SW_VERS ${Reset}   ${ESC}${BlackBack};${WhiteFont}mDate & time:${ESC}${WhiteBack};${BlackFont}m $(date +%F", "%R) ${Reset}\n"
+printf "${ESC}${BlackBack};${WhiteFont}mJava report for:${Reset}${ESC}${WhiteBack};${BlackFont}m $(/usr/sbin/networksetup -getcomputername 2>/dev/null) ${Reset}   ${ESC}${BlackBack};${WhiteFont}mRunning:${ESC}${WhiteBack};${BlackFont}m $SW_VERS ${Reset}   ${ESC}${BlackBack};${WhiteFont}mDate & time:${ESC}${WhiteBack};${BlackFont}m $(date +%F", "%R) ${Reset}\n"
 echo
 #echo "Safari version: $(defaults read /Applications/Safari.app/Contents/Info CFBundleShortVersionString)"
 
@@ -310,7 +310,7 @@ echo
 printf "${ESC}${BoldFace}mObtaining Java:${Reset}\n"
 echo "1. Java 6 can be fetched from Apple at this address:"
 echo "   http://support.apple.com/kb/DL1572"
-echo "2. Newer Java can be fethes from Oracle at this address:"
+echo "2. Newer Java can be fetched from Oracle at this address:"
 echo "   http://www.oracle.com/technetwork/java/javase/downloads/index.html"
 echo "3. Functionality of web browser plugin can be tested at this address:"
 echo "   http://www.java.com/en/download/testjava.jsp"
