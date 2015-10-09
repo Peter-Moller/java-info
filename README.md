@@ -1,6 +1,9 @@
 # java-info
 A bash script for OS X that details information about java on the machine
 
+![Screendump of java_info](http://fileadmin.cs.lth.se/cs/Personal/Peter_Moller/scripts/bilder/java_info.png)
+
+
 More details about the script can be found here:
 http://cs.lth.se/peter-moller/script/java-info-en/
 
