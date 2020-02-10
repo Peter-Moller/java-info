@@ -313,7 +313,9 @@ echo "1. Java 6 can be fetched from Apple at this address:"
 echo "   http://support.apple.com/kb/DL1572"
 echo "2. Newer Java can be fetched from Oracle at this address:"
 echo "   http://www.oracle.com/technetwork/java/javase/downloads/index.html"
-echo "3. Functionality of web browser plugin can be tested at this address:"
+echo "3. Open Java can be downloaded from this address:"
+echo "   https://adoptopenjdk.net"
+echo "4. Functionality of web browser plugin can be tested at this address:"
 echo "   http://www.java.com/en/download/testjava.jsp"
 echo
 echo
