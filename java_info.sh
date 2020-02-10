@@ -7,8 +7,8 @@
 # Version 2.0.3
 # 2014-10-29: added information about running java processes
 # 2014-12-12: name changed from "java_check.sh" to "java_info.sh"
-# 205-09:     moved to GitHub
-#
+# 2015-09:    moved to GitHub
+# 2020-02-10: Now accepts OpenJDK (string width)
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ ScriptOwner="$(ls -ls ${DirName}/${ScriptName} | awk '{print $4":"$5}')"
 
 TempFile="/tmp/java_info.$$.txt"
 
-FormatString="%-18s%-12s%-50s"
+FormatString="%-18s%-18s%-50s"
 
 
 # Check for update
