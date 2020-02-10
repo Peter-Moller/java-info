@@ -261,7 +261,7 @@ echo
 # This *will* break when someone is running an application that is named 'namepart1 -namepart2.app', but I assume this be extremely rare! :-)
 # So, I therefore use the regexp '^.+?(?=\ \-)' to get the interesting part of the line: 
 # from the start of the line, take all characters ('?' is non greedy) up until, but not including, ' -'
-ps -A -o user,pid,ppid,command | grep [j]ava[^_] | grep -v com.oracle.java.JavaUpdateHelper | perl -ne 'm/(^.+?(?=\ \-))/; print "$1\n"' > $TempFile
+ps -A -o user,pid,ppid,command | grep "/[j]ava[^_]" | grep -v com.oracle.java.JavaUpdateHelper | perl -ne 'm/(^.+?(?=\ \-))/; print "$1\n"' | egrep -v "^$" > $TempFile
 # Example: 
 # peterm          68101 67991 /Applications/Minecraft 2.app/Contents/runtime/jre-x64/1.8.0_60/bin/java
 
@@ -288,7 +288,8 @@ if [ -s $TempFile ]; then
       #  PPIDUser=cs-pmo
       echo "• User: \"$UserID\" (PID: $ProcessID)"
       echo "• Command: $COMMAND"
-      echo "• Java version: $("$(echo $COMMAND)" -version 2>&1 | awk '/version/{print $NF}')"
+      #echo "• Java version: $("$(echo $COMMAND)" -version 2>&1 | awk '/version/{print $NF}')"
+      echo "• Java version: $("$(echo $COMMAND)" -version 2>&1 | awk '/version/{print}')"
       if [ -n "$PPIDApp" ]; then
       	printf "${ESC}${ItalicFace}m• Launched by: \"$PPIDApp\" (PID=$ParentPID, run by \"$PPIDUser\")${Reset}\n"
       else
@@ -325,6 +326,6 @@ echo
 #	3 ) open http://www.java.com/en/download/testjava.jsp;;
 #esac
 
-/bin/rm $TempFile
+#/bin/rm $TempFile
 
 exit 0
