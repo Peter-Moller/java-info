@@ -1,7 +1,7 @@
 # java-info
 A bash script for OS X that details information about java on the machine
 
-![Screendump of java_info](java_info_ 2020-02-10.png)
+![Screendump of java_info](java_info_2020-02-10.png)
 
 
 More details about the script can be found here:
